@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (progressBar) progressBar.style.width = `${progress}%`;
     }
 
-    function typeWriter(element, text, speed = 30) {
+    function typeWriter(element, text, speed = 25) {
         element.innerHTML = '';
         let i = 0;
         function type() {
@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
             currentStep = index;
             updateProgress();
 
-            const firstInput = steps[currentStep].querySelector('input, textarea, select');
-            if (firstInput) setTimeout(() => firstInput.focus(), 200);
+            const firstInput = steps[currentStep].querySelector('input:not([type="hidden"]), textarea, select');
+            if (firstInput) setTimeout(() => firstInput.focus(), 300);
         }, currentActive ? 300 : 0);
     }
 
@@ -67,33 +67,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(form);
         
-        // Mapeamento para o formato Pergunta: Resposta
+        // Mapeamento exato para o formato Pergunta: Resposta
         const questionsMap = {
-            "nome": "Nome", "whatsapp": "WhatsApp", "email": "E-mail", "empresa": "Empresa",
-            "colaboradores": "Quantidade de Colaboradores", "faturamento": "Faturamento Anual",
-            "equipe_comercial": "Possui Equipe Comercial?", "tamanho_equipe": "Tamanho da Equipe",
-            "socio_vende": "Sócio é o responsável pelas vendas?", "canais_captacao": "Canais de Captação",
-            "ticket_medio": "Ticket Médio", "taxa_conversao": "Taxa de Conversão",
-            "processo_comercial": "Processo Comercial Definido?", "pos_venda": "Faz Pós-Vendas?",
-            "pesquisa_satisfacao": "Pesquisa de Satisfação?", "escala_urgencia": "Escala de Urgência (0-10)",
-            "necessidade": "Maior Necessidade Comercial"
+            "nome": "Nome Completo",
+            "whatsapp": "WhatsApp",
+            "email": "E-mail",
+            "empresa": "Empresa",
+            "colaboradores": "Quantidade de Colaboradores",
+            "faturamento": "Faturamento Anual",
+            "equipe_comercial": "Possui Equipe Comercial?",
+            "tamanho_equipe": "Tamanho da Equipe Comercial",
+            "socio_vende": "Sócio é o responsável pelas vendas?",
+            "canais_captacao": "Canais de Captação",
+            "ticket_medio": "Ticket Médio",
+            "taxa_conversao": "Taxa de Conversão (%)",
+            "processo_comercial": "Processo Comercial Documentado?",
+            "pos_venda": "Faz Pós-Vendas?",
+            "pesquisa_satisfacao": "Fez Pesquisa NPS?",
+            "escala_urgencia": "Nível de Urgência (0-10)",
+            "necessidade": "Maior Necessidade Atual"
         };
 
-        let formattedMessage = "";
+        let formattedMessage = "Novo Diagnóstico Recebido:\n\n";
         for (let [key, value] of formData.entries()) {
-            if (questionsMap[key] && value && key !== "access_key") {
+            if (questionsMap[key] && value) {
                 formattedMessage += `${questionsMap[key]}: ${value}\n`;
             }
         }
 
-        // Criar um novo FormData limpo para o envio final (para evitar duplicações)
+        // Criar o objeto de envio para o Web3Forms
         const finalData = new FormData();
         finalData.append("access_key", "99abc164-deac-4a9c-92bb-a741627986ac");
         finalData.append("subject", `Novo Diagnóstico: ${formData.get('nome')} - ${formData.get('empresa')}`);
-        finalData.append("from_name", "Diagnóstico Comercial");
+        finalData.append("from_name", "Eficácia Comercial | Diagnóstico");
         finalData.append("message", formattedMessage);
-        finalData.append("email", formData.get('email'));
-        finalData.append("name", formData.get('nome'));
+        
+        // Campos auxiliares para o Web3Forms organizar melhor
+        finalData.append("nome_cliente", formData.get('nome'));
+        finalData.append("email_cliente", formData.get('email'));
 
         try {
             const response = await fetch("https://api.web3forms.com/submit", {
@@ -104,17 +115,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (result.success) {
-                showStep(steps.length - 1); // Sucesso
+                showStep(steps.length - 1); // Vai para a tela de sucesso
                 form.reset();
             } else {
-                alert("Erro ao enviar: " + result.message);
-                if (btnSubmit) {
-                    btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = originalText;
-                }
+                throw new Error(result.message);
             }
         } catch (error) {
-            alert("Algo deu errado. Verifique sua conexão.");
+            alert("Erro ao enviar: " + error.message);
             if (btnSubmit) {
                 btnSubmit.disabled = false;
                 btnSubmit.innerHTML = originalText;
@@ -124,13 +131,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleNext() {
         const currentStepEl = steps[currentStep];
-        if (!currentStepEl) return;
+        if (!currentStepEl || currentStepEl.id === 'successStep') return;
 
         const inputs = currentStepEl.querySelectorAll('input[required], select[required], textarea[required]');
         
         let isValid = true;
         inputs.forEach(input => {
-            if (!input.value) {
+            if (!input.value || (input.type === 'checkbox' && !input.checked)) {
                 isValid = false;
                 input.style.borderBottomColor = '#ef4444';
                 input.parentElement.style.animation = 'shake 0.4s ease';
@@ -140,8 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!emailRegex.test(input.value)) {
                     isValid = false;
                     input.style.borderBottomColor = '#ef4444';
-                    input.parentElement.style.animation = 'shake 0.4s ease';
-                    setTimeout(() => input.parentElement.style.animation = '', 400);
                 } else {
                     input.style.borderBottomColor = '';
                 }
@@ -151,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (isValid) {
-            // Se for o último passo (Passo 15), chama a submissão
+            // Se for o último passo de dados (Passo 15), envia o formulário
             if (currentStepEl.dataset.step === "15") {
                 handleSubmission();
                 return;
@@ -159,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let nextIndex = currentStep + 1;
 
+            // Lógica condicional (Passo 7)
             if (currentStepEl.dataset.step === "7") {
                 const equipe = document.getElementById('equipe_comercial').value;
                 if (equipe === "Sim") {
@@ -176,18 +182,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Global Keydown Listener (mais robusto para o Enter)
-    document.addEventListener('keydown', (e) => {
+    // Gerenciamento unificado da tecla ENTER
+    form.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-            const activeStep = document.querySelector('.step.active');
-            if (!activeStep) return;
-
-            // Se for textarea, deixa o comportamento padrão
             if (e.target.tagName === 'TEXTAREA') return;
-
             e.preventDefault();
             handleNext();
         }
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
     });
 
     nextButtons.forEach(button => {
@@ -198,7 +203,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     backButtons.forEach(button => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
             if (currentStep > 0) {
                 let prevIndex = currentStep - 1;
                 const currentStepEl = steps[currentStep];
@@ -233,16 +239,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 step.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
                 card.classList.add('selected');
                 hiddenInput.value = card.dataset.value;
+                
                 setTimeout(() => {
                     handleNext();
                 }, 400);
             }
         });
-    });
-
-    // Form submit listener (fallback)
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        handleNext();
     });
 });
