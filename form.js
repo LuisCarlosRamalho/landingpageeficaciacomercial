@@ -118,10 +118,28 @@ document.addEventListener('DOMContentLoaded', () => {
     backButtons.forEach(button => {
         button.addEventListener('click', () => {
             if (currentStep > 0) {
-                showStep(currentStep - 1);
+                let prevIndex = currentStep - 1;
+                const currentStepEl = steps[currentStep];
+
+                // Se estamos no passo 8, precisamos saber de onde viemos (7.1 ou 7.2)
+                if (currentStepEl.dataset.step === "8") {
+                    const equipe = document.getElementById('equipe_comercial').value;
+                    if (equipe === "Sim") {
+                        prevIndex = steps.indexOf(document.getElementById('step_equipe_sim'));
+                    } else {
+                        prevIndex = steps.indexOf(document.getElementById('step_equipe_nao'));
+                    }
+                }
+                // Se estamos nos passos condicionais, voltamos para o 7
+                else if (currentStepEl.dataset.step === "7.1" || currentStepEl.dataset.step === "7.2") {
+                    prevIndex = steps.findIndex(s => s.dataset.step === "7");
+                }
+
+                showStep(prevIndex);
             }
         });
     });
+
 
     optionCards.forEach(card => {
         card.addEventListener('click', () => {
