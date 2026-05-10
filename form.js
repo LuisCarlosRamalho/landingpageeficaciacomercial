@@ -158,22 +158,31 @@ document.addEventListener('DOMContentLoaded', () => {
     optionCards.forEach(card => {
         card.addEventListener('click', () => {
             const step = card.closest('.step');
+            const isMulti = step.dataset.multi === "true";
             const hiddenInput = step.querySelector('input[type="hidden"]');
             
-            // Unselect others in the same step
-            step.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-            
-            // Select this one
-            card.classList.add('selected');
-            hiddenInput.value = card.dataset.value;
+            if (isMulti) {
+                // Toggle selection for multi-select
+                card.classList.toggle('selected');
+                
+                // Get all selected values
+                const selected = Array.from(step.querySelectorAll('.option-card.selected'))
+                                    .map(c => c.dataset.value);
+                hiddenInput.value = selected.join(', ');
+            } else {
+                // Single selection logic
+                step.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                hiddenInput.value = card.dataset.value;
 
-            // Auto advance after short delay for better UX
-            setTimeout(() => {
-                handleNext();
-            }, 400);
-
+                // Auto advance after short delay
+                setTimeout(() => {
+                    handleNext();
+                }, 400);
+            }
         });
     });
+
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
