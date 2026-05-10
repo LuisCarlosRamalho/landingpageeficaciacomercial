@@ -147,9 +147,6 @@
                     <div class="option-card" data-value="Não">
                         <h4>Não</h4>
                     </div>
-                    <div class="option-card" data-value="Em estruturação">
-                        <h4>Em estruturação</h4>
-                    </div>
                 </div>
                 <input type="hidden" name="equipe_comercial" id="equipe_comercial" required>
                 <div class="form-nav">
@@ -157,6 +154,39 @@
                     <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
+
+            <!-- Passo 7.1: Se SIM (Condicional) -->
+            <div class="step condicional" id="step_equipe_sim" data-step="7.1">
+                <span class="step-number">07.1. Tamanho da Equipe</span>
+                <h2>Quantas pessoas fazem parte do seu time comercial hoje?</h2>
+                <div class="input-group">
+                    <input type="number" name="tamanho_equipe" id="tamanho_equipe" placeholder="Ex: 3">
+                </div>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step"><i class="fas fa-arrow-left"></i> Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Passo 7.2: Se NÃO (Condicional) -->
+            <div class="step condicional" id="step_equipe_nao" data-step="7.2">
+                <span class="step-number">07.2. Responsável</span>
+                <h2>Hoje, é o próprio sócio quem faz o fechamento das vendas?</h2>
+                <div class="options-grid">
+                    <div class="option-card" data-value="Sim">
+                        <h4>Sim, o sócio</h4>
+                    </div>
+                    <div class="option-card" data-value="Não">
+                        <h4>Não, outra pessoa</h4>
+                    </div>
+                </div>
+                <input type="hidden" name="socio_vende" id="socio_vende">
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step"><i class="fas fa-arrow-left"></i> Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
 
             <!-- Passo 8: Necessidade -->
             <div class="step" data-step="8">

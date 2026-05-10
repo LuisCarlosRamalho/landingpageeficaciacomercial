@@ -13,6 +13,19 @@ document.addEventListener('DOMContentLoaded', () => {
         progressBar.style.width = `${progress}%`;
     }
 
+    function typeWriter(element, text, speed = 30) {
+        element.innerHTML = '';
+        let i = 0;
+        function type() {
+            if (i < text.length) {
+                element.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(type, speed);
+            }
+        }
+        type();
+    }
+
     function showStep(index) {
         // Fade out current active step
         const currentActive = document.querySelector('.step.active');
@@ -27,6 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (i === index) {
                     step.style.opacity = '1';
                     step.style.transform = 'translateY(0)';
+                    
+                    // Typing effect for the question
+                    const h2 = step.querySelector('h2');
+                    if (h2 && !h2.dataset.typed) {
+                        const originalText = h2.innerText;
+                        typeWriter(h2, originalText);
+                        h2.dataset.typed = "true";
+                    }
                 }
             });
             currentStep = index;
@@ -37,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (firstInput) setTimeout(() => firstInput.focus(), 200);
         }, currentActive ? 300 : 0);
     }
+
 
     function handleNext() {
         const currentStepEl = steps[currentStep];
@@ -55,10 +77,29 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        if (isValid && currentStep < steps.length - 1) {
-            showStep(currentStep + 1);
+        if (isValid) {
+            let nextIndex = currentStep + 1;
+
+            // Lógica Condicional para Equipe Comercial (Passo 7)
+            if (currentStepEl.dataset.step === "7") {
+                const equipe = document.getElementById('equipe_comercial').value;
+                if (equipe === "Sim") {
+                    nextIndex = steps.indexOf(document.getElementById('step_equipe_sim'));
+                } else {
+                    nextIndex = steps.indexOf(document.getElementById('step_equipe_nao'));
+                }
+            } 
+            // Pular o passo alternativo após responder o condicional
+            else if (currentStepEl.dataset.step === "7.1") {
+                nextIndex = steps.findIndex(s => s.dataset.step === "8");
+            }
+
+            if (nextIndex < steps.length) {
+                showStep(nextIndex);
+            }
         }
     }
+
 
 
     nextButtons.forEach(button => {
