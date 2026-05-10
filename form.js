@@ -155,10 +155,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Auto advance after short delay for better UX
             setTimeout(() => {
-                if (currentStep < steps.length - 1) {
-                    showStep(currentStep + 1);
-                }
+                handleNext();
             }, 400);
+
         });
     });
 
