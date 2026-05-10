@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify({
-                    access_key: "SUA_CHAVE_AQUI", // O usuário deve substituir pela chave recebida
+                    access_key: "99abc164-deac-4a9c-92bb-a741627986ac",
                     subject: `Novo Diagnóstico: ${data.nome} - ${data.empresa}`,
                     from_name: "Diagnóstico Eficácia Comercial",
                     message: emailBody,
