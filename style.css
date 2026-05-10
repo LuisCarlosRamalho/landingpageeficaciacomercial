@@ -64,6 +64,12 @@ img {
     100% { box-shadow: 0 0 5px rgba(249, 115, 22, 0.2); }
 }
 
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
 .reveal {
     opacity: 0;
     transform: translateY(30px);
@@ -714,90 +720,7 @@ footer {
     50% { box-shadow: 0 4px 30px rgba(37, 211, 102, 0.7); }
 }
 
-/* ============================================
-   RESPONSIVIDADE — MOBILE FIRST
-   Breakpoints:
-   xs: <= 480px  (celular pequeno)
-   sm: <= 768px  (celular / tablet retrato)
-   md: <= 1024px (tablet paisagem / laptop)
-   lg: >= 1400px (smart tv / monitor grande)
-============================================ */
-
-/* --- Menu Hamburger (mobile) --- */
-.hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
-    padding: 4px;
-    background: none;
-    border: none;
-}
-
-.hamburger span {
-    display: block;
-    width: 26px;
-    height: 2px;
-    background: #fff;
-    border-radius: 2px;
-    transition: all 0.3s ease;
-}
-
-.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.hamburger.open span:nth-child(2) { opacity: 0; }
-.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-/* === TABLET PAISAGEM / LAPTOP MENOR (<=1024px) === */
-@media (max-width: 1024px) {
-    :root { --section-padding: 80px 5%; }
-
-    .hero h1 { font-size: clamp(2rem, 4vw, 3rem); }
-
-    .mepo-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2rem;
-    }
-
-    .expert-container { gap: 2.5rem; }
-
-    .expert-info h2 { font-size: 3rem; }
-
-    .cta-box { padding: 4rem 3rem; }
-}
-
-/* === TABLET RETRATO / CELULAR GRANDE (<=768px) === */
-@media (max-width: 768px) {
-    :root { --section-padding: 70px 5%; }
-
-    /* Header & Nav */
-    .hamburger { display: flex; }
-
-    .nav-links {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        background: rgba(10,15,24,0.97);
-        backdrop-filter: blur(20px);
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 2.5rem;
-        z-index: 999;
-    }
-
-    .nav-links.open { display: flex; }
-
-    .nav-links a {
-        font-size: 1.4rem;
-        color: var(--text-main);
-    }
-
-    nav .btn-outline { display: none; }
-
-    /* === Multi-step Form / Diagnóstico Premium === */
+/* === Multi-step Form / Diagnóstico Premium === */
 .form-page {
     background: radial-gradient(circle at top right, #0f172a, #020617);
     min-height: 100vh;
@@ -844,7 +767,7 @@ footer {
 }
 
 .step {
-    display: none !important; /* Force hide */
+    display: none !important; 
     opacity: 0;
     transform: translateY(30px);
     transition: all 0.5s ease;
@@ -986,11 +909,7 @@ footer {
     .step h2 { font-size: 1.6rem; }
     .form-nav { flex-direction: column-reverse; align-items: stretch; }
     .press-enter { display: none; }
-}
-
-
-/* Hero */
-
+    
     .hero {
         text-align: center;
         flex-direction: column;
@@ -1002,9 +921,7 @@ footer {
     }
 
     .hero-content { max-width: 100%; }
-
     .hero h1 { font-size: clamp(1.8rem, 6vw, 2.5rem); }
-
     .hero p { font-size: 1rem; }
 
     .hero-btns {
@@ -1037,9 +954,7 @@ footer {
 
     /* Seções */
     .section-header h2 { font-size: 1.9rem; }
-
     .services-grid { grid-template-columns: 1fr; }
-
     .service-card { padding: 2.5rem 2rem; }
 
     /* MEPO */
@@ -1052,17 +967,13 @@ footer {
     }
 
     .expert-img img { height: 320px !important; }
-
     .expert-info h2 { font-size: 2.2rem; letter-spacing: -1px; }
 
     /* Depoimentos */
     .testimonials-grid { grid-template-columns: 1fr; }
 
     /* CTA Footer */
-    .cta-box {
-        padding: 3rem 1.5rem;
-    }
-
+    .cta-box { padding: 3rem 1.5rem; }
     .cta-box h2 { font-size: 1.8rem; }
 
     /* Footer */
@@ -1089,25 +1000,16 @@ footer {
 /* === CELULAR PEQUENO (<=480px) === */
 @media (max-width: 480px) {
     :root { --section-padding: 60px 4%; }
-
     .hero h1 { font-size: 1.7rem; }
     .hero p { font-size: 0.95rem; }
-
     .btn { padding: 0.85rem 1.8rem; font-size: 0.9rem; }
     .btn-lg { padding: 1rem 2rem; }
-
     .section-header h2 { font-size: 1.6rem; }
-
     .mepo-letter { font-size: 3.5rem; }
-
     .expert-info h2 { font-size: 1.8rem; }
-
     .cta-box h2 { font-size: 1.5rem; }
-
     .hero-social-proof { gap: 1rem; }
-
     .proof-item strong { font-size: 1.3rem; }
-
     .whatsapp-float span { display: none; }
     .whatsapp-float {
         width: 56px;
@@ -1122,29 +1024,15 @@ footer {
 /* === SMART TV / MONITOR GRANDE (>=1400px) === */
 @media (min-width: 1400px) {
     :root { --section-padding: 120px 8%; }
-
     nav { max-width: 1600px; }
-
     .hero h1 { font-size: 4.5rem; }
     .hero p { font-size: 1.35rem; }
-
     .section-header h2 { font-size: 3rem; }
-
     .services-grid { grid-template-columns: repeat(4, 1fr); }
-
     .testimonials-grid { grid-template-columns: repeat(3, 1fr); }
-
     .mepo-grid { grid-template-columns: repeat(4, 1fr); }
-
     .cta-box { padding: 6rem; max-width: 1200px; }
-
     .cta-box h2 { font-size: 3.5rem; }
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    75% { transform: translateX(10px); }
 }
 
 /* === ULTRA WIDE / SMART TV 4K (>=1920px) === */
@@ -1155,3 +1043,8 @@ footer {
     nav { max-width: 1800px; }
 }
 
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
