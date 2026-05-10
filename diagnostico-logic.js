@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateProgress() {
         const progress = ((currentStep) / (steps.length - 1)) * 100;
-        progressBar.style.width = `${progress}%`;
+        if (progressBar) progressBar.style.width = `${progress}%`;
     }
 
     function typeWriter(element, text, speed = 30) {
@@ -56,8 +56,76 @@ document.addEventListener('DOMContentLoaded', () => {
         }, currentActive ? 300 : 0);
     }
 
+    async function handleSubmission() {
+        const btnSubmit = form.querySelector('button[type="submit"]');
+        const originalText = btnSubmit ? btnSubmit.innerHTML : 'Finalizar';
+        
+        if (btnSubmit) {
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+        }
+
+        const formData = new FormData(form);
+        
+        // Mapeamento para o formato Pergunta: Resposta
+        const questionsMap = {
+            "nome": "Nome", "whatsapp": "WhatsApp", "email": "E-mail", "empresa": "Empresa",
+            "colaboradores": "Quantidade de Colaboradores", "faturamento": "Faturamento Anual",
+            "equipe_comercial": "Possui Equipe Comercial?", "tamanho_equipe": "Tamanho da Equipe",
+            "socio_vende": "Sócio é o responsável pelas vendas?", "canais_captacao": "Canais de Captação",
+            "ticket_medio": "Ticket Médio", "taxa_conversao": "Taxa de Conversão",
+            "processo_comercial": "Processo Comercial Definido?", "pos_venda": "Faz Pós-Vendas?",
+            "pesquisa_satisfacao": "Pesquisa de Satisfação?", "escala_urgencia": "Escala de Urgência (0-10)",
+            "necessidade": "Maior Necessidade Comercial"
+        };
+
+        let formattedMessage = "";
+        for (let [key, value] of formData.entries()) {
+            if (questionsMap[key] && value && key !== "access_key") {
+                formattedMessage += `${questionsMap[key]}: ${value}\n`;
+            }
+        }
+
+        // Criar um novo FormData limpo para o envio final (para evitar duplicações)
+        const finalData = new FormData();
+        finalData.append("access_key", "99abc164-deac-4a9c-92bb-a741627986ac");
+        finalData.append("subject", `Novo Diagnóstico: ${formData.get('nome')} - ${formData.get('empresa')}`);
+        finalData.append("from_name", "Diagnóstico Comercial");
+        finalData.append("message", formattedMessage);
+        finalData.append("email", formData.get('email'));
+        finalData.append("name", formData.get('nome'));
+
+        try {
+            const response = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                body: finalData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                showStep(steps.length - 1); // Sucesso
+                form.reset();
+            } else {
+                alert("Erro ao enviar: " + result.message);
+                if (btnSubmit) {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = originalText;
+                }
+            }
+        } catch (error) {
+            alert("Algo deu errado. Verifique sua conexão.");
+            if (btnSubmit) {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = originalText;
+            }
+        }
+    }
+
     function handleNext() {
         const currentStepEl = steps[currentStep];
+        if (!currentStepEl) return;
+
         const inputs = currentStepEl.querySelectorAll('input[required], select[required], textarea[required]');
         
         let isValid = true;
@@ -83,6 +151,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (isValid) {
+            // Se for o último passo (Passo 15), chama a submissão
+            if (currentStepEl.dataset.step === "15") {
+                handleSubmission();
+                return;
+            }
+
             let nextIndex = currentStep + 1;
 
             if (currentStepEl.dataset.step === "7") {
@@ -102,8 +176,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Global Keydown Listener (mais robusto para o Enter)
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const activeStep = document.querySelector('.step.active');
+            if (!activeStep) return;
+
+            // Se for textarea, deixa o comportamento padrão
+            if (e.target.tagName === 'TEXTAREA') return;
+
+            e.preventDefault();
+            handleNext();
+        }
+    });
+
     nextButtons.forEach(button => {
-        button.addEventListener('click', handleNext);
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            handleNext();
+        });
     });
 
     backButtons.forEach(button => {
@@ -149,80 +240,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    form.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            if (e.target.tagName === 'TEXTAREA') return;
-            e.preventDefault();
-            if (currentStep === steps.findIndex(s => s.dataset.step === "15")) {
-                form.requestSubmit();
-            } else {
-                handleNext();
-            }
-        }
-    });
-
-    // Implementação EXATA solicitada pelo usuário para o envio
-    const submitBtn = form.querySelector('button[type="submit"]');
-
-    form.addEventListener('submit', async (e) => {
+    // Form submit listener (fallback)
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
-
-        // Se não for o último passo, apenas avança
-        const finalStepIndex = steps.findIndex(s => s.dataset.step === "15");
-        if (currentStep !== finalStepIndex) {
-            handleNext();
-            return;
-        }
-
-        const formData = new FormData(form);
-        formData.append("access_key", "99abc164-deac-4a9c-92bb-a741627986ac");
-
-        // Formatação das perguntas (Mantida para o corpo do e-mail ser legível)
-        const questionsMap = {
-            "nome": "Nome", "whatsapp": "WhatsApp", "email": "E-mail", "empresa": "Empresa",
-            "colaboradores": "Quantidade de Colaboradores", "faturamento": "Faturamento Anual",
-            "equipe_comercial": "Possui Equipe Comercial?", "tamanho_equipe": "Tamanho da Equipe",
-            "socio_vende": "Sócio é o responsável pelas vendas?", "canais_captacao": "Canais de Captação",
-            "ticket_medio": "Ticket Médio", "taxa_conversao": "Taxa de Conversão",
-            "processo_comercial": "Processo Comercial Definido?", "pos_venda": "Faz Pós-Vendas?",
-            "pesquisa_satisfacao": "Pesquisa de Satisfação?", "escala_urgencia": "Escala de Urgência (0-10)",
-            "necessidade": "Maior Necessidade Comercial"
-        };
-        let formattedMessage = "";
-        for (let [key, value] of formData.entries()) {
-            if (questionsMap[key]) {
-                formattedMessage += `${questionsMap[key]}: ${value}\n`;
-            }
-        }
-        formData.append("message", formattedMessage);
-        formData.append("subject", `Novo Diagnóstico: ${formData.get('nome')}`);
-
-        const originalText = submitBtn.textContent;
-
-        submitBtn.textContent = "Sending...";
-        submitBtn.disabled = true;
-
-        try {
-            const response = await fetch("https://api.web3forms.com/submit", {
-                method: "POST",
-                body: formData
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                // Ao invés de alert, usamos a tela de sucesso do diagnóstico para melhor CX
-                showStep(steps.length - 1);
-                form.reset();
-            } else {
-                alert("Error: " + data.message);
-            }
-
-        } catch (error) {
-            alert("Something went wrong. Please try again.");
-        } finally {
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-        }
+        handleNext();
     });
 });
