@@ -184,16 +184,74 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
         
-        // Em um cenário real, aqui você enviaria os dados via Fetch para um backend ou API.
-        // Simulando envio:
+        const btnSubmit = form.querySelector('button[type="submit"]');
+        const originalText = btnSubmit.innerHTML;
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
-        console.log('Dados do Diagnóstico:', data);
+        
+        // Mapeamento amigável das perguntas
+        const questionsMap = {
+            "nome": "Nome",
+            "whatsapp": "WhatsApp",
+            "email": "E-mail",
+            "empresa": "Empresa",
+            "colaboradores": "Quantidade de Colaboradores",
+            "faturamento": "Faturamento Anual",
+            "equipe_comercial": "Possui Equipe Comercial?",
+            "tamanho_equipe": "Tamanho da Equipe",
+            "socio_vende": "Sócio é o responsável pelas vendas?",
+            "canais_captacao": "Canais de Captação",
+            "ticket_medio": "Ticket Médio",
+            "taxa_conversao": "Taxa de Conversão",
+            "processo_comercial": "Processo Comercial Definido?",
+            "pos_venda": "Faz Pós-Vendas?",
+            "pesquisa_satisfacao": "Pesquisa de Satisfação?",
+            "escala_urgencia": "Escala de Urgência (0-10)",
+            "necessidade": "Maior Necessidade Comercial"
+        };
 
-        // Mostrar tela de sucesso
-        showStep(steps.length - 1); // Penúltimo passo é o formulário, último é o sucesso
+        // Construir o corpo do e-mail formatado
+        let emailBody = "";
+        for (const [key, value] of Object.entries(data)) {
+            const questionText = questionsMap[key] || key;
+            if (value) {
+                emailBody += `${questionText}: ${value}\n`;
+            }
+        }
+
+        try {
+            const response = await fetch('https://formspree.io/f/mqakvjrp', { // Nota: O usuário deve substituir pelo seu ID real do Formspree
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    _subject: `Novo Diagnóstico Comercial: ${data.nome}`,
+                    message: emailBody,
+                    email: data.email
+                })
+            });
+
+            if (response.ok) {
+                showStep(steps.length - 1); // Sucesso
+            } else {
+                alert('Ocorreu um erro ao enviar. Por favor, tente novamente ou entre em contato via WhatsApp.');
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = originalText;
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro de conexão. Verifique sua internet.');
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = originalText;
+        }
     });
+
 });
