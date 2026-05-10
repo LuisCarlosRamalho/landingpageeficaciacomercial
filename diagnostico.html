@@ -188,9 +188,101 @@
             </div>
 
 
-            <!-- Passo 8: Necessidade -->
+            <!-- Passo 8: Canais de Captação -->
             <div class="step" data-step="8">
-                <span class="step-number">08. Objetivo</span>
+                <span class="step-number">08. Captação</span>
+                <h2>Qual canal sua contabilidade usa para captar novos clientes?</h2>
+                <div class="options-grid">
+                    <div class="option-card" data-value="Indicações"><h4>Indicações</h4></div>
+                    <div class="option-card" data-value="Google Ads"><h4>Google Ads</h4></div>
+                    <div class="option-card" data-value="Instagram/Facebook"><h4>Instagram/Facebook</h4></div>
+                    <div class="option-card" data-value="Eventos"><h4>Eventos</h4></div>
+                    <div class="option-card" data-value="Cold Call"><h4>Cold Call</h4></div>
+                    <div class="option-card" data-value="Outros"><h4>Outros</h4></div>
+                </div>
+                <input type="hidden" name="canais_captacao" id="canais_captacao" required>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step"><i class="fas fa-arrow-left"></i> Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Passo 9: Ticket Médio -->
+            <div class="step" data-step="9">
+                <span class="step-number">09. Métricas</span>
+                <h2>Qual o seu Ticket Médio atual?</h2>
+                <div class="input-group">
+                    <input type="text" name="ticket_medio" id="ticket_medio" placeholder="Ex: R$ 1.500,00" required>
+                </div>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step"><i class="fas fa-arrow-left"></i> Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                    <span class="press-enter">ou Enter</span>
+                </div>
+            </div>
+
+            <!-- Passo 10: Taxa de Conversão -->
+            <div class="step" data-step="10">
+                <span class="step-number">10. Performance</span>
+                <h2>Qual a sua taxa de conversão em vendas (%)?</h2>
+                <div class="input-group">
+                    <input type="text" name="taxa_conversao" id="taxa_conversao" placeholder="Ex: 20%" required>
+                </div>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step"><i class="fas fa-arrow-left"></i> Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                    <span class="press-enter">ou Enter</span>
+                </div>
+            </div>
+
+            <!-- Passo 11: Processo Comercial -->
+            <div class="step" data-step="11">
+                <span class="step-number">11. Processos</span>
+                <h2>Você tem um processo comercial definido e documentado?</h2>
+                <div class="options-grid">
+                    <div class="option-card" data-value="Sim"><h4>Sim</h4></div>
+                    <div class="option-card" data-value="Não"><h4>Não</h4></div>
+                </div>
+                <input type="hidden" name="processo_comercial" id="processo_comercial" required>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step"><i class="fas fa-arrow-left"></i> Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Passo 12: Pós-Venda -->
+            <div class="step" data-step="12">
+                <span class="step-number">12. Atendimento</span>
+                <h2>Você faz Pós-Vendas na sua contabilidade?</h2>
+                <div class="options-grid">
+                    <div class="option-card" data-value="Sim"><h4>Sim</h4></div>
+                    <div class="option-card" data-value="Não"><h4>Não</h4></div>
+                </div>
+                <input type="hidden" name="pos_venda" id="pos_venda" required>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step"><i class="fas fa-arrow-left"></i> Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Passo 13: Pesquisa de Satisfação -->
+            <div class="step" data-step="13">
+                <span class="step-number">13. Qualidade</span>
+                <h2>Já fez alguma pesquisa de qualidade e satisfação (NPS)?</h2>
+                <div class="options-grid">
+                    <div class="option-card" data-value="Sim"><h4>Sim</h4></div>
+                    <div class="option-card" data-value="Não"><h4>Não</h4></div>
+                </div>
+                <input type="hidden" name="pesquisa_satisfacao" id="pesquisa_satisfacao" required>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step"><i class="fas fa-arrow-left"></i> Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Passo 14: Necessidade -->
+            <div class="step" data-step="14">
+                <span class="step-number">14. Objetivo</span>
                 <h2>Qual a sua maior necessidade comercial hoje?</h2>
                 <div class="options-grid">
                     <div class="option-card" data-value="Conquistar Clientes">
@@ -209,6 +301,7 @@
                     <button type="submit" class="btn-next">Finalizar Diagnóstico <i class="fas fa-check"></i></button>
                 </div>
             </div>
+
 
 
             <!-- Mensagem de Sucesso -->
