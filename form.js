@@ -14,15 +14,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showStep(index) {
-        steps.forEach((step, i) => {
-            step.classList.toggle('active', i === index);
-        });
-        currentStep = index;
-        updateProgress();
+        // Fade out current active step
+        const currentActive = document.querySelector('.step.active');
+        if (currentActive) {
+            currentActive.style.opacity = '0';
+            currentActive.style.transform = 'translateY(-20px)';
+        }
 
-        // Focus first input of the step
-        const firstInput = steps[currentStep].querySelector('input, textarea, select');
-        if (firstInput) setTimeout(() => firstInput.focus(), 100);
+        setTimeout(() => {
+            steps.forEach((step, i) => {
+                step.classList.toggle('active', i === index);
+                if (i === index) {
+                    step.style.opacity = '1';
+                    step.style.transform = 'translateY(0)';
+                }
+            });
+            currentStep = index;
+            updateProgress();
+
+            // Focus first input of the step
+            const firstInput = steps[currentStep].querySelector('input, textarea, select');
+            if (firstInput) setTimeout(() => firstInput.focus(), 200);
+        }, currentActive ? 300 : 0);
     }
 
     function handleNext() {
@@ -34,6 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!input.value) {
                 isValid = false;
                 input.style.borderBottomColor = '#ef4444';
+                // Subtle shake animation
+                input.parentElement.style.animation = 'shake 0.4s ease';
+                setTimeout(() => input.parentElement.style.animation = '', 400);
             } else {
                 input.style.borderBottomColor = '';
             }
@@ -43,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showStep(currentStep + 1);
         }
     }
+
 
     nextButtons.forEach(button => {
         button.addEventListener('click', handleNext);
