@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
         
-        // Mapeamento amigável das perguntas
+        // Mapeamento amigável das perguntas para o corpo do e-mail
         const questionsMap = {
             "nome": "Nome",
             "whatsapp": "WhatsApp",
@@ -216,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
             "necessidade": "Maior Necessidade Comercial"
         };
 
-        // Construir o corpo do e-mail formatado
+        // Construir o corpo do e-mail no formato Pergunta: Resposta
         let emailBody = "";
         for (const [key, value] of Object.entries(data)) {
             const questionText = questionsMap[key] || key;
@@ -226,23 +226,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch('https://formspree.io/f/mqakvjrp', { // Nota: O usuário deve substituir pelo seu ID real do Formspree
+            const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
                 headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({
-                    _subject: `Novo Diagnóstico Comercial: ${data.nome}`,
+                    access_key: "SUA_CHAVE_AQUI", // O usuário deve substituir pela chave recebida
+                    subject: `Novo Diagnóstico: ${data.nome} - ${data.empresa}`,
+                    from_name: "Diagnóstico Eficácia Comercial",
                     message: emailBody,
-                    email: data.email
+                    email: data.email // Permite responder direto ao lead
                 })
             });
 
-            if (response.ok) {
+            const result = await response.json();
+
+            if (result.success) {
                 showStep(steps.length - 1); // Sucesso
             } else {
-                alert('Ocorreu um erro ao enviar. Por favor, tente novamente ou entre em contato via WhatsApp.');
+                alert('Erro ao enviar: ' + result.message);
                 btnSubmit.disabled = false;
                 btnSubmit.innerHTML = originalText;
             }
@@ -253,5 +257,6 @@ document.addEventListener('DOMContentLoaded', () => {
             btnSubmit.innerHTML = originalText;
         }
     });
+
 
 });
