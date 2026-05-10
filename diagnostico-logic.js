@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('diagnosticForm');
+    const form = document.getElementById('form');
     const steps = Array.from(document.querySelectorAll('.step'));
     const nextButtons = document.querySelectorAll('.btn-next');
     const backButtons = document.querySelectorAll('.back-step');
@@ -161,21 +161,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Implementação EXATA solicitada pelo usuário para o envio
+    const submitBtn = form.querySelector('button[type="submit"]');
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // Se não for o último passo, apenas avança
         const finalStepIndex = steps.findIndex(s => s.dataset.step === "15");
         if (currentStep !== finalStepIndex) {
             handleNext();
             return;
         }
 
-        const btnSubmit = form.querySelector('button[type="submit"]');
-        const originalText = btnSubmit.innerHTML;
-        btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-
         const formData = new FormData(form);
-        const rawData = Object.fromEntries(formData.entries());
+        formData.append("access_key", "99abc164-deac-4a9c-92bb-a741627986ac");
+
+        // Formatação das perguntas (Mantida para o corpo do e-mail ser legível)
         const questionsMap = {
             "nome": "Nome", "whatsapp": "WhatsApp", "email": "E-mail", "empresa": "Empresa",
             "colaboradores": "Quantidade de Colaboradores", "faturamento": "Faturamento Anual",
@@ -186,43 +188,41 @@ document.addEventListener('DOMContentLoaded', () => {
             "pesquisa_satisfacao": "Pesquisa de Satisfação?", "escala_urgencia": "Escala de Urgência (0-10)",
             "necessidade": "Maior Necessidade Comercial"
         };
-
         let formattedMessage = "";
-        for (let [key, value] of Object.entries(rawData)) {
-            if (questionsMap[key] && value) {
+        for (let [key, value] of formData.entries()) {
+            if (questionsMap[key]) {
                 formattedMessage += `${questionsMap[key]}: ${value}\n`;
             }
         }
+        formData.append("message", formattedMessage);
+        formData.append("subject", `Novo Diagnóstico: ${formData.get('nome')}`);
 
-        const payload = {
-            access_key: "99abc164-deac-4a9c-92bb-a741627986ac",
-            subject: `Novo Diagnóstico: ${rawData.nome} - ${rawData.empresa}`,
-            from_name: "Diagnóstico Comercial",
-            message: formattedMessage,
-            email: rawData.email,
-            nome: rawData.nome,
-            whatsapp: rawData.whatsapp
-        };
+        const originalText = submitBtn.textContent;
+
+        submitBtn.textContent = "Sending...";
+        submitBtn.disabled = true;
 
         try {
             const response = await fetch("https://api.web3forms.com/submit", {
                 method: "POST",
-                headers: { "Content-Type": "application/json", "Accept": "application/json" },
-                body: JSON.stringify(payload)
+                body: formData
             });
-            const result = await response.json();
-            if (result.success) {
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Ao invés de alert, usamos a tela de sucesso do diagnóstico para melhor CX
                 showStep(steps.length - 1);
                 form.reset();
             } else {
-                alert("Erro ao enviar: " + result.message);
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = originalText;
+                alert("Error: " + data.message);
             }
+
         } catch (error) {
-            alert("Algo deu errado. Verifique sua conexão.");
-            btnSubmit.disabled = false;
-            btnSubmit.innerHTML = originalText;
+            alert("Something went wrong. Please try again.");
+        } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
         }
     });
 });
