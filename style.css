@@ -797,7 +797,184 @@ footer {
 
     nav .btn-outline { display: none; }
 
-    /* Hero */
+    /* === Multi-step Form / Diagnóstico === */
+.form-page {
+    background: var(--bg-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 5%;
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4rem;
+}
+
+.form-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 4px;
+    background: var(--primary);
+    transition: width 0.3s ease;
+    z-index: 2000;
+}
+
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.step {
+    display: none;
+    animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.step.active {
+    display: block;
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.step-number {
+    font-size: 1rem;
+    color: var(--primary);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.step h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.input-group {
+    margin-bottom: 2rem;
+}
+
+.input-group input, 
+.input-group textarea,
+.input-group select {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 1.5rem;
+    padding: 1rem 0;
+    font-family: var(--font-sans);
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
+    border-color: var(--primary);
+}
+
+.input-group textarea {
+    min-height: 120px;
+    resize: none;
+}
+
+.form-nav {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 3rem;
+}
+
+.btn-next {
+    background: var(--primary);
+    color: #fff;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.btn-back {
+    background: transparent;
+    color: var(--text-muted);
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    font-size: 1rem;
+}
+
+.btn-back:hover {
+    color: #fff;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.option-card {
+    padding: 2rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border-glass);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.option-card:hover {
+    background: rgba(255,255,255,0.06);
+    border-color: var(--primary);
+}
+
+.option-card.selected {
+    background: rgba(249, 115, 22, 0.1);
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.2);
+}
+
+.option-card h4 {
+    font-size: 1.1rem;
+    color: #fff;
+}
+
+.success-message {
+    text-align: center;
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: #22c55e;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .step h2 { font-size: 1.8rem; }
+    .input-group input { font-size: 1.2rem; }
+}
+
+/* Hero */
+
     .hero {
         text-align: center;
         flex-direction: column;

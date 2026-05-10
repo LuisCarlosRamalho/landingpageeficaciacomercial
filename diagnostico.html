@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico Gratuito | Eficácia Comercial</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="form-page">
+
+    <div class="form-progress" id="progressBar"></div>
+
+    <header class="form-header">
+        <div class="logo">
+            <img src="https://blogger.googleusercontent.com/img/a/AVvXsEhUf1bBawCUruNAjhNAK-WZ0SYrx-8CG6p3zCzF7l5s3zKXkhv1OtYkzGLPEnZLPf05AHjwHLO6-S5iY-punBEoAUD8c63hIsFFRM6zScizjqn5PWytLlib5brbfHzM9aVKoaNQHjysLqQEg1VO6LMyGb85fiI-69PtrTz1SYeWgNec-n-FZo1nqFrMmdL-" alt="Eficácia Comercial" style="height: 30px;">
+            <span style="font-size: 1.2rem;">Eficácia <span class="logo-highlight">Comercial</span></span>
+        </div>
+        <a href="index.html" class="btn-back"><i class="fas fa-times"></i> Sair</a>
+    </header>
+
+    <main class="form-container">
+        <form id="diagnosticForm">
+            <!-- Passo 1: Nome -->
+            <div class="step active" data-step="1">
+                <span class="step-number">01. Nome</span>
+                <h2>Olá! Para começar, qual é o seu nome completo?</h2>
+                <div class="input-group">
+                    <input type="text" name="nome" id="nome" placeholder="Escreva aqui..." required>
+                </div>
+                <div class="form-nav">
+                    <button type="button" class="btn-next">Continuar <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Passo 2: WhatsApp -->
+            <div class="step" data-step="2">
+                <span class="step-number">02. Contato</span>
+                <h2>Qual o seu WhatsApp para contato?</h2>
+                <div class="input-group">
+                    <input type="tel" name="whatsapp" id="whatsapp" placeholder="(00) 00000-0000" required>
+                </div>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step">Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Passo 3: E-mail -->
+            <div class="step" data-step="3">
+                <span class="step-number">03. E-mail</span>
+                <h2>Qual o melhor e-mail para falarmos com você?</h2>
+                <div class="input-group">
+                    <input type="email" name="email" id="email" placeholder="seuemail@exemplo.com" required>
+                </div>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step">Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Passo 4: Empresa -->
+            <div class="step" data-step="4">
+                <span class="step-number">04. Empresa</span>
+                <h2>Qual o nome da sua Empresa/Escritório?</h2>
+                <div class="input-group">
+                    <input type="text" name="empresa" id="empresa" placeholder="Nome da empresa" required>
+                </div>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step">Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Passo 5: Colaboradores -->
+            <div class="step" data-step="5">
+                <span class="step-number">05. Equipe</span>
+                <h2>Atualmente, qual a quantidade de colaboradores?</h2>
+                <div class="options-grid">
+                    <div class="option-card" data-value="1-5">
+                        <h4>1 a 5</h4>
+                    </div>
+                    <div class="option-card" data-value="6-15">
+                        <h4>6 a 15</h4>
+                    </div>
+                    <div class="option-card" data-value="16-50">
+                        <h4>16 a 50</h4>
+                    </div>
+                    <div class="option-card" data-value="50+">
+                        <h4>Mais de 50</h4>
+                    </div>
+                </div>
+                <input type="hidden" name="colaboradores" id="colaboradores" required>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step">Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Passo 6: Faturamento -->
+            <div class="step" data-step="6">
+                <span class="step-number">06. Faturamento</span>
+                <h2>Qual o faturamento anual aproximado?</h2>
+                <div class="options-grid">
+                    <div class="option-card" data-value="Até 500k">
+                        <h4>Até R$ 500 mil</h4>
+                    </div>
+                    <div class="option-card" data-value="500k-1M">
+                        <h4>R$ 500 mil a R$ 1 milhão</h4>
+                    </div>
+                    <div class="option-card" data-value="1M-5M">
+                        <h4>R$ 1 milhão a R$ 5 milhões</h4>
+                    </div>
+                    <div class="option-card" data-value="5M+">
+                        <h4>Acima de R$ 5 milhões</h4>
+                    </div>
+                </div>
+                <input type="hidden" name="faturamento" id="faturamento" required>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step">Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Passo 7: Equipe Comercial -->
+            <div class="step" data-step="7">
+                <span class="step-number">07. Comercial</span>
+                <h2>Você possui uma equipe comercial estruturada hoje?</h2>
+                <div class="options-grid">
+                    <div class="option-card" data-value="Sim">
+                        <h4>Sim</h4>
+                    </div>
+                    <div class="option-card" data-value="Não">
+                        <h4>Não</h4>
+                    </div>
+                    <div class="option-card" data-value="Em estruturação">
+                        <h4>Em estruturação</h4>
+                    </div>
+                </div>
+                <input type="hidden" name="equipe_comercial" id="equipe_comercial" required>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step">Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Passo 8: Necessidade -->
+            <div class="step" data-step="8">
+                <span class="step-number">08. Objetivo</span>
+                <h2>Qual a sua maior necessidade comercial hoje?</h2>
+                <div class="options-grid">
+                    <div class="option-card" data-value="Conquistar Clientes">
+                        <h4>Conquistar novos clientes</h4>
+                    </div>
+                    <div class="option-card" data-value="Fidelizar">
+                        <h4>Fidelizar os atuais</h4>
+                    </div>
+                    <div class="option-card" data-value="Ambos">
+                        <h4>Ambos</h4>
+                    </div>
+                </div>
+                <input type="hidden" name="necessidade" id="necessidade" required>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step">Voltar</button>
+                    <button type="submit" class="btn-next">Finalizar Diagnóstico <i class="fas fa-check"></i></button>
+                </div>
+            </div>
+
+            <!-- Mensagem de Sucesso -->
+            <div class="step" id="successStep">
+                <div class="success-message">
+                    <i class="fas fa-check-circle success-icon"></i>
+                    <h2>Diagnóstico Concluído com Sucesso!</h2>
+                    <p>Obrigado! Recebemos suas informações e um de nossos especialistas entrará em contato em breve.</p>
+                    <br><br>
+                    <a href="index.html" class="btn btn-primary">Voltar para o site</a>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <script src="form.js"></script>
+</body>
+</html>
