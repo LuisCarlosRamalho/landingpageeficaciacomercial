@@ -7,13 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const optionCards = document.querySelectorAll('.option-card');
 
     let currentStep = 0;
+    let isTransitioning = false;
 
     function updateProgress() {
         const progress = ((currentStep) / (steps.length - 1)) * 100;
         if (progressBar) progressBar.style.width = `${progress}%`;
     }
 
-    function typeWriter(element, text, speed = 25) {
+    function typeWriter(element, text, speed = 20) {
         element.innerHTML = '';
         let i = 0;
         function type() {
@@ -27,6 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showStep(index) {
+        if (isTransitioning) return;
+        isTransitioning = true;
+
         const currentActive = document.querySelector('.step.active');
         if (currentActive) {
             currentActive.style.opacity = '0';
@@ -52,7 +56,14 @@ document.addEventListener('DOMContentLoaded', () => {
             updateProgress();
 
             const firstInput = steps[currentStep].querySelector('input:not([type="hidden"]), textarea, select');
-            if (firstInput) setTimeout(() => firstInput.focus(), 300);
+            if (firstInput) {
+                setTimeout(() => {
+                    firstInput.focus();
+                    isTransitioning = false;
+                }, 100);
+            } else {
+                isTransitioning = false;
+            }
         }, currentActive ? 300 : 0);
     }
 
@@ -67,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(form);
         
-        // Mapeamento exato para o formato Pergunta: Resposta
         const questionsMap = {
             "nome": "Nome Completo",
             "whatsapp": "WhatsApp",
@@ -95,14 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Criar o objeto de envio para o Web3Forms
         const finalData = new FormData();
         finalData.append("access_key", "99abc164-deac-4a9c-92bb-a741627986ac");
         finalData.append("subject", `Novo Diagnóstico: ${formData.get('nome')} - ${formData.get('empresa')}`);
         finalData.append("from_name", "Eficácia Comercial | Diagnóstico");
         finalData.append("message", formattedMessage);
-        
-        // Campos auxiliares para o Web3Forms organizar melhor
         finalData.append("nome_cliente", formData.get('nome'));
         finalData.append("email_cliente", formData.get('email'));
 
@@ -115,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (result.success) {
-                showStep(steps.length - 1); // Vai para a tela de sucesso
+                showStep(steps.length - 1);
                 form.reset();
             } else {
                 throw new Error(result.message);
@@ -130,18 +137,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleNext() {
+        if (isTransitioning) return;
+
         const currentStepEl = steps[currentStep];
         if (!currentStepEl || currentStepEl.id === 'successStep') return;
 
-        const inputs = currentStepEl.querySelectorAll('input[required], select[required], textarea[required]');
+        // Validação manual: busca qualquer input (mesmo hidden) no passo atual
+        const inputs = currentStepEl.querySelectorAll('input, select, textarea');
         
         let isValid = true;
         inputs.forEach(input => {
-            if (!input.value || (input.type === 'checkbox' && !input.checked)) {
+            // Ignora campos que não têm nome ou são chaves de acesso
+            if (!input.name || input.name === 'access_key') return;
+
+            if (!input.value) {
                 isValid = false;
-                input.style.borderBottomColor = '#ef4444';
-                input.parentElement.style.animation = 'shake 0.4s ease';
-                setTimeout(() => input.parentElement.style.animation = '', 400);
+                if (input.type !== 'hidden') {
+                    input.style.borderBottomColor = '#ef4444';
+                    input.parentElement.style.animation = 'shake 0.4s ease';
+                    setTimeout(() => input.parentElement.style.animation = '', 400);
+                } else {
+                    // Se for hidden (opções), balança o container das opções
+                    const grid = currentStepEl.querySelector('.options-grid');
+                    if (grid) {
+                        grid.style.animation = 'shake 0.4s ease';
+                        setTimeout(() => grid.style.animation = '', 400);
+                    }
+                }
             } else if (input.type === 'email') {
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (!emailRegex.test(input.value)) {
@@ -156,7 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (isValid) {
-            // Se for o último passo de dados (Passo 15), envia o formulário
             if (currentStepEl.dataset.step === "15") {
                 handleSubmission();
                 return;
@@ -164,7 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let nextIndex = currentStep + 1;
 
-            // Lógica condicional (Passo 7)
             if (currentStepEl.dataset.step === "7") {
                 const equipe = document.getElementById('equipe_comercial').value;
                 if (equipe === "Sim") {
@@ -182,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Gerenciamento unificado da tecla ENTER
     form.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             if (e.target.tagName === 'TEXTAREA') return;
@@ -205,6 +224,8 @@ document.addEventListener('DOMContentLoaded', () => {
     backButtons.forEach(button => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
+            if (isTransitioning) return;
+            
             if (currentStep > 0) {
                 let prevIndex = currentStep - 1;
                 const currentStepEl = steps[currentStep];
@@ -226,6 +247,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     optionCards.forEach(card => {
         card.addEventListener('click', () => {
+            if (isTransitioning) return;
+            
             const step = card.closest('.step');
             const isMulti = step.dataset.multi === "true";
             const hiddenInput = step.querySelector('input[type="hidden"]');
@@ -242,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 setTimeout(() => {
                     handleNext();
-                }, 400);
+                }, 300);
             }
         });
     });
