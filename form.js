@@ -186,16 +186,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        
-        const btnSubmit = form.querySelector('button[type="submit"]');
-        const originalText = btnSubmit.innerHTML;
-        btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
 
         const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
         
-        // Mapeamento amigável das perguntas para o corpo do e-mail
+        // Mapeamento para o formato Pergunta: Resposta
         const questionsMap = {
             "nome": "Nome",
             "whatsapp": "WhatsApp",
@@ -216,47 +210,47 @@ document.addEventListener('DOMContentLoaded', () => {
             "necessidade": "Maior Necessidade Comercial"
         };
 
-        // Construir o corpo do e-mail no formato Pergunta: Resposta
-        let emailBody = "";
-        for (const [key, value] of Object.entries(data)) {
-            const questionText = questionsMap[key] || key;
-            if (value) {
-                emailBody += `${questionText}: ${value}\n`;
+        let formattedMessage = "";
+        for (let [key, value] of formData.entries()) {
+            if (questionsMap[key]) {
+                formattedMessage += `${questionsMap[key]}: ${value}\n`;
             }
         }
+
+        // Configurando os dados para o Web3Forms conforme seu código
+        formData.append("access_key", "99abc164-deac-4a9c-92bb-a741627986ac");
+        formData.append("subject", `Novo Diagnóstico: ${formData.get('nome')} - ${formData.get('empresa')}`);
+        formData.append("message", formattedMessage);
+
+        const btnSubmit = form.querySelector('button[type="submit"]');
+        const originalText = btnSubmit.innerHTML;
+
+        btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+        btnSubmit.disabled = true;
 
         try {
-            const response = await fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    access_key: "99abc164-deac-4a9c-92bb-a741627986ac",
-                    subject: `Novo Diagnóstico: ${data.nome} - ${data.empresa}`,
-                    from_name: "Diagnóstico Eficácia Comercial",
-                    message: emailBody,
-                    email: data.email // Permite responder direto ao lead
-                })
+            const response = await fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                body: formData
             });
 
-            const result = await response.json();
+            const data = await response.json();
 
-            if (result.success) {
-                showStep(steps.length - 1); // Sucesso
+            if (response.ok) {
+                showStep(steps.length - 1); // Sucesso (Navegação interna)
+                form.reset();
             } else {
-                alert('Erro ao enviar: ' + result.message);
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = originalText;
+                alert("Erro: " + data.message);
             }
+
         } catch (error) {
-            console.error('Erro:', error);
-            alert('Erro de conexão. Verifique sua internet.');
-            btnSubmit.disabled = false;
+            alert("Algo deu errado. Por favor, tente novamente.");
+        } finally {
             btnSubmit.innerHTML = originalText;
+            btnSubmit.disabled = false;
         }
     });
+
 
 
 });
