@@ -66,13 +66,26 @@ document.addEventListener('DOMContentLoaded', () => {
         
         let isValid = true;
         inputs.forEach(input => {
+            // Validação Básica (Preenchimento)
             if (!input.value) {
                 isValid = false;
                 input.style.borderBottomColor = '#ef4444';
-                // Subtle shake animation
                 input.parentElement.style.animation = 'shake 0.4s ease';
                 setTimeout(() => input.parentElement.style.animation = '', 400);
-            } else {
+            } 
+            // Validação E-mail
+            else if (input.type === 'email') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(input.value)) {
+                    isValid = false;
+                    input.style.borderBottomColor = '#ef4444';
+                    input.parentElement.style.animation = 'shake 0.4s ease';
+                    setTimeout(() => input.parentElement.style.animation = '', 400);
+                } else {
+                    input.style.borderBottomColor = '';
+                }
+            }
+            else {
                 input.style.borderBottomColor = '';
             }
         });
@@ -89,8 +102,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     nextIndex = steps.indexOf(document.getElementById('step_equipe_nao'));
                 }
             } 
-            // Pular o passo alternativo após responder o condicional
-            else if (currentStepEl.dataset.step === "7.1") {
+            // Pular o passo alternativo após responder o condicional (7.1 ou 7.2)
+            else if (currentStepEl.dataset.step === "7.1" || currentStepEl.dataset.step === "7.2") {
                 nextIndex = steps.findIndex(s => s.dataset.step === "8");
             }
 
@@ -99,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+
 
 
 

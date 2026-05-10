@@ -1043,6 +1043,15 @@ footer {
     nav { max-width: 1800px; }
 }
 
+.scale-card {
+    padding: 1rem 0.5rem;
+    min-width: 0;
+}
+
+.scale-card h4 {
+    font-size: 1.1rem;
+}
+
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-10px); }

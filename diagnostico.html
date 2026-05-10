@@ -29,7 +29,7 @@
     </header>
 
     <main class="form-container">
-        <form id="diagnosticForm">
+        <form id="diagnosticForm" autocomplete="off">
             <!-- Passo 1: Nome -->
             <div class="step active" data-step="1">
                 <span class="step-number">01. Nome</span>
@@ -279,10 +279,34 @@
                     <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
-
-            <!-- Passo 14: Necessidade -->
+            
+            <!-- Passo 14: Escala de Necessidade -->
             <div class="step" data-step="14">
-                <span class="step-number">14. Objetivo</span>
+                <span class="step-number">14. Urgência</span>
+                <h2>Em uma escala de 0 a 10, qual a sua necessidade de organizar o comercial e vontade de crescer faturamento?</h2>
+                <div class="options-grid" style="grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));">
+                    <div class="option-card scale-card" data-value="0"><h4>0</h4></div>
+                    <div class="option-card scale-card" data-value="1"><h4>1</h4></div>
+                    <div class="option-card scale-card" data-value="2"><h4>2</h4></div>
+                    <div class="option-card scale-card" data-value="3"><h4>3</h4></div>
+                    <div class="option-card scale-card" data-value="4"><h4>4</h4></div>
+                    <div class="option-card scale-card" data-value="5"><h4>5</h4></div>
+                    <div class="option-card scale-card" data-value="6"><h4>6</h4></div>
+                    <div class="option-card scale-card" data-value="7"><h4>7</h4></div>
+                    <div class="option-card scale-card" data-value="8"><h4>8</h4></div>
+                    <div class="option-card scale-card" data-value="9"><h4>9</h4></div>
+                    <div class="option-card scale-card" data-value="10"><h4>10</h4></div>
+                </div>
+                <input type="hidden" name="escala_urgencia" id="escala_urgencia" required>
+                <div class="form-nav">
+                    <button type="button" class="btn-back back-step"><i class="fas fa-arrow-left"></i> Voltar</button>
+                    <button type="button" class="btn-next">Próximo <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+
+            <!-- Passo 15: Necessidade -->
+            <div class="step" data-step="15">
+                <span class="step-number">15. Objetivo</span>
                 <h2>Qual a sua maior necessidade comercial hoje?</h2>
                 <div class="options-grid">
                     <div class="option-card" data-value="Conquistar Clientes">
