@@ -19,28 +19,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         currentStep = index;
         updateProgress();
+
+        // Focus first input of the step
+        const firstInput = steps[currentStep].querySelector('input, textarea, select');
+        if (firstInput) setTimeout(() => firstInput.focus(), 100);
+    }
+
+    function handleNext() {
+        const currentStepEl = steps[currentStep];
+        const inputs = currentStepEl.querySelectorAll('input[required], select[required], textarea[required]');
+        
+        let isValid = true;
+        inputs.forEach(input => {
+            if (!input.value) {
+                isValid = false;
+                input.style.borderBottomColor = '#ef4444';
+            } else {
+                input.style.borderBottomColor = '';
+            }
+        });
+
+        if (isValid && currentStep < steps.length - 1) {
+            showStep(currentStep + 1);
+        }
     }
 
     nextButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const currentStepEl = steps[currentStep];
-            const inputs = currentStepEl.querySelectorAll('input[required], select[required], textarea[required]');
-            
-            let isValid = true;
-            inputs.forEach(input => {
-                if (!input.value) {
-                    isValid = false;
-                    input.style.borderColor = '#ef4444';
-                } else {
-                    input.style.borderColor = '';
-                }
-            });
-
-            if (isValid && currentStep < steps.length - 1) {
-                showStep(currentStep + 1);
-            }
-        });
+        button.addEventListener('click', handleNext);
     });
+
+    // Handle Enter Key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleNext();
+        }
+    });
+
 
     backButtons.forEach(button => {
         button.addEventListener('click', () => {
